@@ -47,21 +47,14 @@ app.post("/updateUserPreferences", async (req, res) => {
     // Retrieve the current preferences from the database
     const currentPreferences = await getUserPreferences(username);
 
-    // Merge the new preferences with the current preferences
-    const updatedPreferences = {
-      ...currentPreferences,
-      ...preferences,
-    };
-
-    // Remove keys from updatedPreferences where the value is empty
-    for (let key in updatedPreferences) {
-      if (updatedPreferences[key] === "") {
-        delete updatedPreferences[key];
+    for (let key in preferences) {
+      if (preferences[key] !== "") {
+        currentPreferences[key] = preferences[key];
       }
     }
 
     // Update the user preferences in the database
-    const result = await updateUserPreferences(username, updatedPreferences);
+    const result = await updateUserPreferences(username, currentPreferences);
     res.send(result);
   } catch (error) {
     res.send(error.message);
